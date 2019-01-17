@@ -10,10 +10,22 @@ import Foundation
 import UIKit
 import AsyncDisplayKit
 
-struct Message {
+class Message {
     let type: String
     let text: String
     let image: UIImage
+    var showAll: Bool
+
+    init(type: String, text: String, image: UIImage, showAll: Bool = true) {
+        self.type = type
+        self.text = text
+        self.image = image
+        self.showAll = showAll
+    }
+
+    func copy() -> Message {
+        return Message(type: type, text: text, image: image, showAll: self.showAll)
+    }
 }
 
 struct Chatter {
@@ -21,19 +33,27 @@ struct Chatter {
     let avatar: UIImage
 }
 
-struct MessageNode {
+class MessageNode: NSObject {
     let chatter: Chatter
     let message: Message
     var showAvatar: Bool
     let reactions: [String]
+
+    init(chatter: Chatter, message: Message, showAvatar:Bool, reactions: [String]) {
+        self.chatter = chatter
+        self.message = message
+        self.showAvatar = showAvatar
+        self.reactions = reactions
+        super.init()
+    }
 }
 
-class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ChatViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, ChatTableViewCellDelegate {
 
     var messageNodes: [MessageNode] = []
     var heights: [CGFloat] = []
     var tableView = UITableView()
-
+    var timer: Timer?
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -43,7 +63,11 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.register(ChatTableViewCell.self, forCellReuseIdentifier: "demo")
-        self.setupData()
+
+        self.timer = Timer(timeInterval: 1, repeats: false) { [weak self] (_) in
+            self?.setupData()
+        }
+        RunLoop.main.add(self.timer!, forMode: .default)
     }
 
     var lastc: Chatter?
@@ -66,20 +90,26 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
 
         let reactions: [[String]] = [[], ["haha"], ["haha", "cry"]]
 
-        for _ in 0...99 {
-            let c = chatters[Int(arc4random() % 3)]
-            let m = messages[Int(arc4random() % 6)]
-            let r = reactions[Int(arc4random() % 3)]
-            let showAvatar = lastc == nil || lastc!.name != c.name
-            let messageNode = MessageNode(chatter: c, message: m, showAvatar:showAvatar, reactions: r)
-            lastc = c
-            self.messageNodes.append(messageNode)
-            let node = ChatCellNode()
-            node.node = messageNode
-            let size = node.layoutThatFits(ASSizeRange(min: CGSize.zero, max: UIScreen.main.bounds.size)).size
-            heights.append(size.height)
-        }
+        DispatchQueue.global().async {
+            for _ in 0..<100 {
+                let c = chatters[Int(arc4random() % 3)]
+                let m = messages[Int(arc4random() % 6)].copy()
+                let r = reactions[Int(arc4random() % 3)]
+                let showAvatar = self.lastc == nil || self.lastc!.name != c.name
+                let messageNode = MessageNode(chatter: c, message: m, showAvatar:showAvatar, reactions: r)
+                self.lastc = c
+                self.messageNodes.append(messageNode)
+                let node = ChatCellNode()
+                node.node = messageNode
+                let size = node.layoutThatFits(ASSizeRange(min: CGSize.zero, max: UIScreen.main.bounds.size)).size
+                self.heights.append(size.height)
+            }
 
+            DispatchQueue.main.async {
+//                self.tableView.insertRows(at: [IndexPath(row: self.messageNodes.count - 1, section: 0)], with: .none)
+                self.tableView.reloadData()
+            }
+        }
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -95,6 +125,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.backgroundColor = UIColor.gray
             cell.message = self.messageNodes[indexPath.row]
             cell.height = self.heights[indexPath.row]
+            cell.delegate = self
             return cell
         }
         return UITableViewCell()
@@ -103,9 +134,24 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }
+
+    func update(message: MessageNode, node: ChatCellNode) {
+        if let index = self.messageNodes.firstIndex(where: { (n) -> Bool in
+            return n == message
+        }) {
+            heights[index] = node.layoutThatFits(ASSizeRange(min: CGSize.zero, max: UIScreen.main.bounds.size)).size.height
+            self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .none)
+        }
+    }
+}
+
+protocol ChatTableViewCellDelegate {
+    func update(message: MessageNode, node: ChatCellNode)
 }
 
 class ChatTableViewCell: UITableViewCell {
+
+    var delegate: ChatTableViewCellDelegate?
 
     var message: MessageNode? {
         didSet {
@@ -113,11 +159,18 @@ class ChatTableViewCell: UITableViewCell {
         }
     }
 
-    var node: ChatCellNode = ChatCellNode ()
+    var node: ChatCellNode = ChatCellNode()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         self.contentView.addSubnode(self.node)
+
+        self.node.updateBlock = { [weak self] in
+            guard let `self` = self else {
+                return
+            }
+            self.delegate?.update(message: self.message!, node: self.node)
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -134,6 +187,12 @@ class ChatTableViewCell: UITableViewCell {
 class ChatCellNode: ASDisplayNode {
     var avatarNode: AvatarNode = AvatarNode()
     var bubbleNode: BubbleNode = BubbleNode()
+
+    var updateBlock: () -> Void = {} {
+        didSet {
+            self.bubbleNode.updateBlock = updateBlock
+        }
+    }
 
     override init() {
         super.init()
@@ -201,12 +260,18 @@ class BubbleNode: ASDisplayNode {
     var contentNode: ContentNode?
     var reactionNode: ReactionNode?
 
+    var updateBlock: () -> Void = {} {
+        didSet {
+            self.contentNode?.updateBlock = updateBlock
+        }
+    }
 
     var node: MessageNode? {
         didSet {
             guard let node = self.node else { return }
             if node.message.type == "text" {
                 self.contentNode = TextNode()
+                self.contentNode?.updateBlock = self.updateBlock
             } else {
                 self.contentNode = ImageNode()
             }
@@ -251,38 +316,88 @@ class ContentNode: ASDisplayNode {
         self.automaticallyManagesSubnodes = true
     }
 
+    var updateBlock: () -> Void = {}
+
     var message: Message?
 }
 
 class TextNode: ContentNode {
-    var label: UILabel = UILabel()
-
+    lazy var label: UILabel = UILabel()
     override var message: Message? {
         didSet {
-            self.label.numberOfLines = 0
-            self.label.text = message?.text ?? ""
-            self.label.font = UIFont.systemFont(ofSize: 16)
+            // *******
+            doWhenLoaded { [weak self] in
+                self?.label.numberOfLines = (self?.message?.showAll ?? true) ? 0 : 2
+                self?.label.text = self?.message?.text ?? ""
+            }
         }
     }
 
     override init() {
-
         super.init()
         self.setViewBlock { [weak self] () -> UIView in
             guard let `self` = self else {
                 return UIView()
             }
+            self.label.backgroundColor = UIColor.lightGray
+            self.label.font = UIFont.systemFont(ofSize: 16)
+            self.label.isUserInteractionEnabled = true
+            self.loadBlock?()
+            self.loadBlock = nil
             return self.label
         }
         self.style.flexShrink = 1
-        self.label.backgroundColor = UIColor.lightGray
+    }
+
+    override func didLoad() {
+        super.didLoad()
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(clickCell))
+        self.view.addGestureRecognizer(tap)
     }
 
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spec = ASWrapperLayoutSpec(layoutElements: [])
-        let size = self.label.sizeThatFits(CGSize(width: constrainedSize.max.width, height: 10000))
-        spec.style.preferredSize = size
+
+        let paragraphStyle: NSMutableParagraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .left
+        paragraphStyle.lineBreakMode = .byWordWrapping
+        paragraphStyle.lineSpacing = 2
+
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 16),
+            .paragraphStyle: paragraphStyle
+        ]
+
+        if self.message!.showAll {
+            let text = (self.message?.text ?? "") as NSString
+            let size = text.boundingRect(
+                with: CGSize(width: constrainedSize.max.width, height: 10000),
+                options: [.usesLineFragmentOrigin, .usesFontLeading],
+                attributes: attributes,
+                context: nil).size
+            spec.style.preferredSize = size
+        } else {
+            let maxWidth = constrainedSize.max.width.isInfinite ? 10000 : constrainedSize.max.width
+            spec.style.preferredSize = CGSize(width: maxWidth, height: 44)
+        }
+
         return spec
+    }
+
+    var loadBlock: (() -> Void)?
+    func doWhenLoaded(_ blcok: @escaping () -> Void) {
+        if self.isNodeLoaded {
+            blcok()
+        } else {
+            self.loadBlock = blcok
+        }
+    }
+
+    @objc
+    func clickCell() {
+        self.message!.showAll = !self.message!.showAll
+        self.updateBlock()
     }
 }
 

@@ -40,7 +40,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                 self.navigationController?.pushViewController(vc2, animated: true)
             }),
             Node(title: "原生Table复杂demo", block: {
-
+                let vc3 = ChatViewController()
+                self.navigationController?.pushViewController(vc3, animated: true)
             })
         ]
     }

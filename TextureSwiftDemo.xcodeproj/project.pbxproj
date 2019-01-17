@@ -12,6 +12,7 @@
 		DB9B7C9621EF720C00E805D0 /* Demo1ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9B7C9521EF720C00E805D0 /* Demo1ViewController.swift */; };
 		DB9B7C9821EF725200E805D0 /* Demo1RootNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9B7C9721EF725200E805D0 /* Demo1RootNode.swift */; };
 		DB9B7C9B21F0226B00E805D0 /* AnimationDemoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9B7C9A21F0226B00E805D0 /* AnimationDemoController.swift */; };
+		DB9B7C9E21F0486000E805D0 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9B7C9D21F0486000E805D0 /* ChatViewController.swift */; };
 		DBD160A721EC9E0D002A145C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD160A621EC9E0D002A145C /* AppDelegate.swift */; };
 		DBD160A921EC9E0D002A145C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD160A821EC9E0D002A145C /* ViewController.swift */; };
 		DBD160AC21EC9E0D002A145C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBD160AA21EC9E0D002A145C /* Main.storyboard */; };
@@ -40,6 +41,7 @@
 		DB9B7C9521EF720C00E805D0 /* Demo1ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Demo1ViewController.swift; sourceTree = "<group>"; };
 		DB9B7C9721EF725200E805D0 /* Demo1RootNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Demo1RootNode.swift; sourceTree = "<group>"; };
 		DB9B7C9A21F0226B00E805D0 /* AnimationDemoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationDemoController.swift; sourceTree = "<group>"; };
+		DB9B7C9D21F0486000E805D0 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		DBD160A321EC9E0C002A145C /* TextureSwiftDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TextureSwiftDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBD160A621EC9E0D002A145C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DBD160A821EC9E0D002A145C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -110,6 +112,14 @@
 			path = AnimationDemo;
 			sourceTree = "<group>";
 		};
+		DB9B7C9C21F0484A00E805D0 /* ChatDemo */ = {
+			isa = PBXGroup;
+			children = (
+				DB9B7C9D21F0486000E805D0 /* ChatViewController.swift */,
+			);
+			path = ChatDemo;
+			sourceTree = "<group>";
+		};
 		DBD1609A21EC9E0C002A145C = {
 			isa = PBXGroup;
 			children = (
@@ -135,6 +145,7 @@
 			children = (
 				DBD160A621EC9E0D002A145C /* AppDelegate.swift */,
 				DBD160A821EC9E0D002A145C /* ViewController.swift */,
+				DB9B7C9C21F0484A00E805D0 /* ChatDemo */,
 				DB9B7C9921F0224E00E805D0 /* AnimationDemo */,
 				DB9B7C9421EF718300E805D0 /* ASTableDemo */,
 				DBD160AA21EC9E0D002A145C /* Main.storyboard */,
@@ -339,6 +350,7 @@
 				DB9B7C9621EF720C00E805D0 /* Demo1ViewController.swift in Sources */,
 				DBD160A921EC9E0D002A145C /* ViewController.swift in Sources */,
 				DB9B7C9821EF725200E805D0 /* Demo1RootNode.swift in Sources */,
+				DB9B7C9E21F0486000E805D0 /* ChatViewController.swift in Sources */,
 				DBD160A721EC9E0D002A145C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

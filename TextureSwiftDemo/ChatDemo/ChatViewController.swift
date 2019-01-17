@@ -32,7 +32,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     var messageNodes: [MessageNode] = []
     var heights: [CGFloat] = []
-    var nodes: [ChatCellNode] = []
     var tableView = UITableView()
 
     override func viewDidLoad() {
@@ -46,6 +45,8 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.tableView.register(ChatTableViewCell.self, forCellReuseIdentifier: "demo")
         self.setupData()
     }
+
+    var lastc: Chatter?
 
     func setupData() {
         let messages: [Message] = [
@@ -65,8 +66,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
 
         let reactions: [[String]] = [[], ["haha"], ["haha", "cry"]]
 
-        var lastc: Chatter?
-        for _ in 0...100 {
+        for _ in 0...99 {
             let c = chatters[Int(arc4random() % 3)]
             let m = messages[Int(arc4random() % 6)]
             let r = reactions[Int(arc4random() % 3)]
@@ -77,7 +77,6 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
             let node = ChatCellNode()
             node.node = messageNode
             let size = node.layoutThatFits(ASSizeRange(min: CGSize.zero, max: UIScreen.main.bounds.size)).size
-            nodes.append(node)
             heights.append(size.height)
         }
 
@@ -94,7 +93,7 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "demo") as? ChatTableViewCell {
             cell.backgroundColor = UIColor.gray
-            cell.node = self.nodes[indexPath.row]
+            cell.message = self.messageNodes[indexPath.row]
             cell.height = self.heights[indexPath.row]
             return cell
         }
@@ -108,18 +107,26 @@ class ChatViewController: UIViewController, UITableViewDelegate, UITableViewData
 
 class ChatTableViewCell: UITableViewCell {
 
-    var node: ChatCellNode? {
+    var message: MessageNode? {
         didSet {
-            oldValue?.view.removeFromSuperview()
-            if let node = self.node {
-                self.contentView.addSubnode(node)
-            }
+            self.node.node = message
         }
+    }
+
+    var node: ChatCellNode = ChatCellNode ()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.contentView.addSubnode(self.node)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     var height: CGFloat = 0 {
         didSet {
-            self.node?.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: height)
+            self.node.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: height)
         }
     }
 }

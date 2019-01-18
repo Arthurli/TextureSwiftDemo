@@ -19,6 +19,7 @@
 		DBD160AE21EC9E0E002A145C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DBD160AD21EC9E0E002A145C /* Assets.xcassets */; };
 		DBD160B121EC9E0E002A145C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DBD160AF21EC9E0E002A145C /* LaunchScreen.storyboard */; };
 		DBD160BC21EC9E0E002A145C /* TextureSwiftDemoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD160BB21EC9E0E002A145C /* TextureSwiftDemoTests.swift */; };
+		DBD9DB4721F1DD52000EC7BF /* StackDemoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD9DB4621F1DD52000EC7BF /* StackDemoVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		DBD160BB21EC9E0E002A145C /* TextureSwiftDemoTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextureSwiftDemoTests.swift; sourceTree = "<group>"; };
 		DBD160BD21EC9E0E002A145C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DBD160C821ECA0DC002A145C /* TextureSwiftDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TextureSwiftDemo-Bridging-Header.h"; sourceTree = "<group>"; };
+		DBD9DB4621F1DD52000EC7BF /* StackDemoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackDemoVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,6 +147,7 @@
 			children = (
 				DBD160A621EC9E0D002A145C /* AppDelegate.swift */,
 				DBD160A821EC9E0D002A145C /* ViewController.swift */,
+				DBD9DB4521F1DD3F000EC7BF /* Stack */,
 				DB9B7C9C21F0484A00E805D0 /* ChatDemo */,
 				DB9B7C9921F0224E00E805D0 /* AnimationDemo */,
 				DB9B7C9421EF718300E805D0 /* ASTableDemo */,
@@ -164,6 +167,14 @@
 				DBD160BD21EC9E0E002A145C /* Info.plist */,
 			);
 			path = TextureSwiftDemoTests;
+			sourceTree = "<group>";
+		};
+		DBD9DB4521F1DD3F000EC7BF /* Stack */ = {
+			isa = PBXGroup;
+			children = (
+				DBD9DB4621F1DD52000EC7BF /* StackDemoVC.swift */,
+			);
+			path = Stack;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -301,6 +312,7 @@
 				"${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework",
 				"${BUILT_PRODUCTS_DIR}/PINOperation/PINOperation.framework",
 				"${BUILT_PRODUCTS_DIR}/PINRemoteImage/PINRemoteImage.framework",
+				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Texture/AsyncDisplayKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -310,6 +322,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINCache.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINOperation.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINRemoteImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AsyncDisplayKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -347,6 +360,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB9B7C9B21F0226B00E805D0 /* AnimationDemoController.swift in Sources */,
+				DBD9DB4721F1DD52000EC7BF /* StackDemoVC.swift in Sources */,
 				DB9B7C9621EF720C00E805D0 /* Demo1ViewController.swift in Sources */,
 				DBD160A921EC9E0D002A145C /* ViewController.swift in Sources */,
 				DB9B7C9821EF725200E805D0 /* Demo1RootNode.swift in Sources */,

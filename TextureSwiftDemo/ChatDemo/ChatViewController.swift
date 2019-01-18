@@ -325,7 +325,6 @@ class TextNode: ContentNode {
     lazy var label: UILabel = UILabel()
     override var message: Message? {
         didSet {
-            // *******
             doWhenLoaded { [weak self] in
                 self?.label.numberOfLines = (self?.message?.showAll ?? true) ? 0 : 2
                 self?.label.text = self?.message?.text ?? ""

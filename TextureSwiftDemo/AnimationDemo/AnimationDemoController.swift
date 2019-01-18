@@ -101,7 +101,6 @@ class TransitionNode: ASDisplayNode {
         UIView.animate(withDuration: 0.5, animations: {
             self.text1.frame = context.finalFrame(for: self.text1)
             self.text2.frame = context.finalFrame(for: self.text2)
-
         }) { (finish) in
             context.completeTransition(finish)
         }

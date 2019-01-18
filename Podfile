@@ -12,5 +12,5 @@ target 'TextureSwiftDemo' do
   end
 
   pod "Texture"
-
+  pod "SnapKit"
 end

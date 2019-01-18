@@ -42,6 +42,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             Node(title: "原生Table复杂demo", block: {
                 let vc3 = ChatViewController()
                 self.navigationController?.pushViewController(vc3, animated: true)
+            }),
+            Node(title: "stack", block: {
+                let node = StackDemoNode()
+                let vc4 = StackDemoVC(node: node)
+                self.navigationController?.pushViewController(vc4, animated: true)
             })
         ]
     }
